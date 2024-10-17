@@ -33,6 +33,9 @@ public final class InputValidator {
     }
 
     //Validate w and b for non-null and return the valid values
-    return new Result(Objects.requireNonNull(w, "w is null"), Objects.requireNonNull(b, "b is null"));
+    return Result.builder()
+        .wValid(Objects.requireNonNull(w, "w is null"))
+        .bValid(Objects.requireNonNull(b, "b is null"))
+        .build();
   }
 }
