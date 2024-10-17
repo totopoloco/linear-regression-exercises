@@ -16,12 +16,20 @@ public final class GradientCalculator {
                                                 final BigDecimal[] initialCondition) {
     return IntStream.range(0, m)
         .mapToObj(i -> {
-          BigDecimal fwb = ModelCreator.createModel(x.get(i), result.wValid(), result.bValid());
-          return Utils.getBigDecimals(fwb.subtract(y.get(i)).multiply(x.get(i)), fwb.subtract(y.get(i)));
+          final BigDecimal diff =
+              getDifferenceObserverVsPredicted(
+                  y,
+                  i,
+                  ModelCreator.createModel(x.get(i), result.wValid(), result.bValid()));
+          return Utils.getBigDecimals(diff.multiply(x.get(i)), diff);
         })
         .reduce(
             initialCondition, (mya, myb) -> Utils.getBigDecimals(mya[0].add(myb[0]), mya[1].add(myb[1]))
         );
+  }
+
+  private static BigDecimal getDifferenceObserverVsPredicted(final List<BigDecimal> y, final int i, final BigDecimal fwb) {
+    return fwb.subtract(y.get(i));
   }
 
 
