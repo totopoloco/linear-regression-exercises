@@ -1,12 +1,13 @@
 package at.mavila.linearr;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ComputeGradientService {
+
 
   /**
    * Compute the gradient.
@@ -32,21 +33,18 @@ public class ComputeGradientService {
     final Result result = InputValidator.wrapParameters(x, y, w, b);
     final int m = x.size();
 
-    BigDecimal[] gradients = GradientCalculator.calculateGradients(
-        x,
-        y,
-        m,
-        result,
-        Utils.getBigDecimals(BigDecimal.ZERO, BigDecimal.ZERO)
-    );
+    BigDecimal[] gradients =
+        GradientCalculator.calculateGradients(x, y, m, result, Utils.getBigDecimals(BigDecimal.ZERO, BigDecimal.ZERO));
 
     // Divide the accumulated partial derivatives by the number of samples
-    BigDecimal djdwDivideM = gradients[0].divide(BigDecimal.valueOf(m), 20, RoundingMode.UNNECESSARY).stripTrailingZeros();
-    BigDecimal djdbDivideM = gradients[1].divide(BigDecimal.valueOf(m), 20, RoundingMode.UNNECESSARY).stripTrailingZeros();
+    final BigDecimal djdwDivideMZeros = gradients[0].divide(BigDecimal.valueOf(m), new MathContext(Utils.PRECISION));
+    final BigDecimal djdwDivideM = djdwDivideMZeros.stripTrailingZeros();
+
+    final BigDecimal djdbDivideMZeros = gradients[1].divide(BigDecimal.valueOf(m), new MathContext(Utils.PRECISION));
+    final BigDecimal djdbDivideM = djdbDivideMZeros.stripTrailingZeros();
 
     // Return the partial derivatives
     return List.of(djdwDivideM, djdbDivideM);
   }
-
 
 }

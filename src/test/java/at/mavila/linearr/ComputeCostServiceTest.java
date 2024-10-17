@@ -39,6 +39,100 @@ class ComputeCostServiceTest {
   }
 
   @Test
+  void whenGivenW0B0ParametersThenGetAResult() {
+    //Given
+    List<BigDecimal> x = List.of(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4));
+    List<BigDecimal> y = List.of(BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4), BigDecimal.valueOf(5));
+    BigDecimal w = BigDecimal.valueOf(0D);
+    BigDecimal b = BigDecimal.valueOf(0D);
+
+    //When
+    BigDecimal result = this.computeCostService.computeCost(x, y, w, b);
+
+    //Then
+    assertThat(result).isNotNull().isEqualTo(BigDecimal.valueOf(6.75));
+
+  }
+
+  @Test
+  void whenGivenLargeParametersThenGetAResult() {
+    //Given
+    List<BigDecimal> x = List.of(
+        new BigDecimal("1.299288388489299443"),
+        new BigDecimal("2.299288828990299443"),
+        new BigDecimal("3.827727772825617783"),
+        new BigDecimal("4.727727990928288928")
+    );
+    List<BigDecimal> y = List.of(
+        new BigDecimal("2.827727772825617783"),
+        new BigDecimal("3.728843726393294728"),
+        new BigDecimal("4.922837823899328388"),
+        new BigDecimal("5.272736282827872872")
+    );
+    BigDecimal w = BigDecimal.valueOf(9.8288383994904D);
+    BigDecimal b = BigDecimal.valueOf(2.9277398999389D);
+
+    //When
+    BigDecimal result = this.computeCostService.computeCost(x, y, w, b);
+
+    //Then
+    assertThat(result).isNotNull().isEqualTo(new BigDecimal("482.11794395470745996"));
+
+  }
+
+  @Test
+  void whenGivenVeryLargeParametersThenGetAResult() {
+    //Given
+    List<BigDecimal> x = List.of(
+        new BigDecimal("1.299288388489299443299288388489299443"),
+        new BigDecimal("2.299288828990299443299288388489299443"),
+        new BigDecimal("3.827727772825617783299288388489299443"),
+        new BigDecimal("4.727727990928288928299288388489299443")
+    );
+    List<BigDecimal> y = List.of(
+        new BigDecimal("2.827727772825617783299288388489299443"),
+        new BigDecimal("3.728843726393294728299288388489299443"),
+        new BigDecimal("4.922837823899328388299288388489299443"),
+        new BigDecimal("5.272736282827872872299288388489299443")
+    );
+    BigDecimal w = BigDecimal.valueOf(0.18288383994904299288388489299443D);
+    BigDecimal b = BigDecimal.valueOf(0.19277398999389299288388489299443D);
+
+    //When
+    BigDecimal result = this.computeCostService.computeCost(x, y, w, b);
+
+    //Then
+    assertThat(result).isNotNull().isEqualTo(new BigDecimal("6.1830270852817061563"));
+
+  }
+
+  @Test
+  void whenPreparedParametersForTrailingZerosThenGetAResult() {
+    //Given
+    List<BigDecimal> x = List.of(
+        new BigDecimal("1.0000000000000000000000000000000000001"),
+        new BigDecimal("2.0000000000000000000000000000000000001"),
+        new BigDecimal("3.0000000000000000000000000000000000001"),
+        new BigDecimal("4.0000000000000000000000000000000000001")
+    );
+    List<BigDecimal> y = List.of(
+        new BigDecimal("2.0000000000000000000000000000000000001"),
+        new BigDecimal("3.0000000000000000000000000000000000001"),
+        new BigDecimal("4.0000000000000000000000000000000000001"),
+        new BigDecimal("5.0000000000000000000000000000000000001")
+    );
+    BigDecimal w = BigDecimal.valueOf(0.9000000000000000000000000001D);
+    BigDecimal b = BigDecimal.valueOf(0.10000000000000000000000000000000000000000000002D);
+
+    //When
+    BigDecimal result = this.computeCostService.computeCost(x, y, w, b);
+
+    //Then
+    assertThat(result).isNotNull().isEqualTo(new BigDecimal("0.6675"));
+
+  }
+
+  @Test
   void whenGivenW4B3ParametersThenGetAResult() {
     //Given
     List<BigDecimal> x = List.of(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4));
@@ -190,6 +284,30 @@ class ComputeCostServiceTest {
     assertThatThrownBy(() -> this.computeCostService.computeCost(x, y, w, b))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("y is empty");
+  }
+
+  @Test
+  void testComputeGradientWithExactScale() {
+    // Given
+    List<BigDecimal> x = List.of(
+        new BigDecimal("1.00000000000000000001"),
+        new BigDecimal("2.00000000000000000002"),
+        new BigDecimal("3.00000000000000000003"),
+        new BigDecimal("4.00000000000000000004"));
+    List<BigDecimal> y = List.of(
+        new BigDecimal("2.00000000000000000002"),
+        new BigDecimal("3.00000000000000000003"),
+        new BigDecimal("4.00000000000000000004"),
+        new BigDecimal("5.00000000000000000005"));
+    BigDecimal w = BigDecimal.valueOf(2);
+    BigDecimal b = BigDecimal.valueOf(1);
+
+    // When
+    BigDecimal result = this.computeCostService.computeCost(x, y, w, b);
+
+    // Then
+    assertThat(result).isNotNull();
+    assertThat(new BigDecimal("3.7500000000000000001")).isEqualTo(result);
   }
 
 

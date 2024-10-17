@@ -53,13 +53,14 @@ tasks.named('test') {
 
 pitest {
     targetClasses = ['at.mavila.linearr.*']
-    jvmArgs = ['-Xmx1024m']
+    jvmArgs = ['-Xmx1024m', '-XX:+EnableDynamicAgentLoading']
     pitestVersion = '1.15.0'
     threads = 4
     outputFormats = ['XML', 'HTML']
     useClasspathFile = true
     timestampedReports = false
     junit5PluginVersion = '1.2.1'
+    mutators = ['ALL']
 }
 
 jacoco {

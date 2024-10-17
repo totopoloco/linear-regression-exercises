@@ -7,6 +7,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Utils {
 
+  public static final int PRECISION = 20;
+
+  /**
+   * Conenient method to get an array of BigDecimals.
+   *
+   * @param value0 the first value.
+   * @param value1 the second value.
+   * @return the array of BigDecimals.
+   */
   public static BigDecimal[] getBigDecimals(BigDecimal value0, BigDecimal value1) {
     return new BigDecimal[] {value0, value1};
   }

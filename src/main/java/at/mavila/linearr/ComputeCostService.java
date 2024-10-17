@@ -1,12 +1,13 @@
 package at.mavila.linearr;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ComputeCostService {
+
 
   /**
    * Compute the cost of the linear regression model.
@@ -30,17 +31,17 @@ public class ComputeCostService {
     Result result = InputValidator.wrapParameters(x, y, w, b);
 
     //Compute the cost
-    return calculateTotalCost(x, y, result.wValid(), result.bValid()) /*BigDecimal*/
-        .divide(BigDecimal.valueOf(2L * x.size()), 20, RoundingMode.UNNECESSARY).stripTrailingZeros();
+    BigDecimal divided = calculateTotalCost(x, y, result.wValid(), result.bValid()) /*BigDecimal*/
+        .divide(BigDecimal.valueOf(2L * x.size()), new MathContext(Utils.PRECISION));
+
+    return divided.stripTrailingZeros();
   }
 
   private static BigDecimal calculateTotalCost(final List<BigDecimal> x,
                                                final List<BigDecimal> y,
                                                final BigDecimal w,
                                                final BigDecimal b) {
-    return x.stream()
-        .map(xi -> calculateSingleCost(x, y, xi, w, b))
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return x.stream().map(xi -> calculateSingleCost(x, y, xi, w, b)).reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   private static BigDecimal calculateSingleCost(final List<BigDecimal> x,
@@ -52,4 +53,6 @@ public class ComputeCostService {
     return ModelCreator.createModel(xi, w, b).subtract(y.get(x.indexOf(xi))).pow(2);
 
   }
+
+
 }
