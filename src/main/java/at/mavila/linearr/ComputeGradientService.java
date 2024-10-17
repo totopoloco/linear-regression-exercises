@@ -28,34 +28,25 @@ public class ComputeGradientService {
    * @return the gradient
    */
   public List<BigDecimal> computeGradient(List<BigDecimal> x, List<BigDecimal> y, BigDecimal w, BigDecimal b) {
-
-    //Use the input validator to validate the input
+    // Use the input validator to validate the input
     final Result result = InputValidator.wrapParameters(x, y, w, b);
     final int m = x.size();
 
-    BigDecimal djdw = BigDecimal.ZERO;
-    BigDecimal djdb = BigDecimal.ZERO;
+    BigDecimal[] gradients = GradientCalculator.calculateGradients(
+        x,
+        y,
+        m,
+        result,
+        Utils.getBigDecimals(BigDecimal.ZERO, BigDecimal.ZERO)
+    );
 
-    for (int i = 0; i < m; i++) {
+    // Divide the accumulated partial derivatives by the number of samples
+    BigDecimal djdwDivideM = gradients[0].divide(BigDecimal.valueOf(m), 20, RoundingMode.UNNECESSARY).stripTrailingZeros();
+    BigDecimal djdbDivideM = gradients[1].divide(BigDecimal.valueOf(m), 20, RoundingMode.UNNECESSARY).stripTrailingZeros();
 
-      BigDecimal fwb = ModelCreator.createModel(x.get(i), result.wValid(), result.bValid());
-      //Apply the formula for djdwi = fwb-y[i]*x[i]
-      BigDecimal djdwi = fwb.subtract(y.get(i)).multiply(x.get(i));
-      //Apply the formula for djdwi = fwb-y[i]
-      BigDecimal djdbi = fwb.subtract(y.get(i));
-      //Accumulate the partial derivatives for w and b
-      djdw = djdw.add(djdwi);
-      djdb = djdb.add(djdbi);
-
-    }
-
-    //Divide the accumulated partial derivatives by the number of samples
-    final BigDecimal djdwDivideM = djdw.divide(BigDecimal.valueOf(m), 20, RoundingMode.UNNECESSARY).stripTrailingZeros();
-    final BigDecimal djdbDivideM = djdb.divide(BigDecimal.valueOf(m), 20, RoundingMode.UNNECESSARY).stripTrailingZeros();
-
-    //Return the partial derivatives
+    // Return the partial derivatives
     return List.of(djdwDivideM, djdbDivideM);
-
   }
+
 
 }
