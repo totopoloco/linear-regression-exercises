@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'info.solidsoft.pitest' version '1.15.0'
+    id 'jacoco'
 }
 
 group = 'at.mavila'
@@ -48,3 +50,39 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+pitest {
+    targetClasses = ['at.mavila.linearr.*']
+    jvmArgs = ['-Xmx1024m']
+    pitestVersion = '1.15.0'
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    useClasspathFile = true
+    timestampedReports = false
+    junit5PluginVersion = '1.2.1'
+}
+
+jacoco {
+    toolVersion = '0.8.10'
+}
+
+jacocoTestReport {
+
+    reports {
+        csv.required = true
+        html.required = true
+        xml.required = true
+    }
+    onlyIf {
+        true
+    }
+
+    executionData { tasks.withType(Test).findAll { it.state.executed }*.jacoco.destinationFile }
+}
+
+//Pitest depends on Jacoco
+tasks.named('pitest') {
+    dependsOn 'jacocoTestReport'
+}
+
+build.dependsOn 'pitest'
