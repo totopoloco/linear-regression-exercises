@@ -31,6 +31,4 @@ public final class GradientCalculator {
   private static BigDecimal getDifferenceObservedVsPredicted(final List<BigDecimal> y, final int i, final BigDecimal fwb) {
     return fwb.subtract(y.get(i));
   }
-
-
 }
