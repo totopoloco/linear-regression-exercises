@@ -310,7 +310,6 @@ class ComputeCostServiceTest {
     assertThat(new BigDecimal("3.7500000000000000001")).isEqualTo(result);
   }
 
-
   //Test using property
   @Property
   void whenGivenRandomValuesThenGetAResult(
@@ -329,5 +328,4 @@ class ComputeCostServiceTest {
     log.info("w: {}, b: {}, result: {}", w, b, result);
     assertThat(result).isNotNull();
   }
-
 }
