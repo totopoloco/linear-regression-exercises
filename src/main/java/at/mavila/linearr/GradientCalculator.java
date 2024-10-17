@@ -17,7 +17,7 @@ public final class GradientCalculator {
     return IntStream.range(0, m)
         .mapToObj(i -> {
           final BigDecimal diff =
-              getDifferenceObserverVsPredicted(
+              getDifferenceObservedVsPredicted(
                   y,
                   i,
                   ModelCreator.createModel(x.get(i), result.wValid(), result.bValid()));
@@ -28,7 +28,7 @@ public final class GradientCalculator {
         );
   }
 
-  private static BigDecimal getDifferenceObserverVsPredicted(final List<BigDecimal> y, final int i, final BigDecimal fwb) {
+  private static BigDecimal getDifferenceObservedVsPredicted(final List<BigDecimal> y, final int i, final BigDecimal fwb) {
     return fwb.subtract(y.get(i));
   }
 
