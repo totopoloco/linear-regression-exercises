@@ -177,6 +177,21 @@ class ComputeCostServiceTest {
 
   }
 
+  //Test when the array y is empty and everything else is not null
+  @Test
+  void whenGivenYEmptyParametersThenThrowIllegalArgumentException() {
+    //Given
+    List<BigDecimal> x = List.of(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4));
+    List<BigDecimal> y = List.of();
+    BigDecimal w = BigDecimal.valueOf(2);
+    BigDecimal b = BigDecimal.valueOf(1);
+
+    //When and Then
+    assertThatThrownBy(() -> this.computeCostService.computeCost(x, y, w, b))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("y is empty");
+  }
+
 
   //Test using property
   @Property
