@@ -37,8 +37,11 @@ dependencies {
     testImplementation 'org.springframework.graphql:spring-graphql-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // Apache Collections Utils
+    //Apache Collections Utils
     implementation 'org.apache.commons:commons-collections4:4.4'
+
+    //Apache Math Commons
+    implementation 'org.apache.commons:commons-math3:3.6.1'
 
     //Extra test dependencies
     testImplementation 'net.jqwik:jqwik:1.8.5'
