@@ -3,10 +3,8 @@ package at.mavila.linearr;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.AllArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.math3.analysis.function.Log;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,24 +56,16 @@ public class ComputeCostLogisticService {
     return cost.get().divide(BigDecimal.valueOf(m), new MathContext(Utils.PRECISION)).stripTrailingZeros();
   }
 
-  private static void performParameterValidations(List<List<BigDecimal>> x, List<BigDecimal> y, List<BigDecimal> w,
+  private static void performParameterValidations(List<List<BigDecimal>> x,
+                                                  List<BigDecimal> y,
+                                                  List<BigDecimal> w,
                                                   BigDecimal b) {
-    if (CollectionUtils.isEmpty(x)) {
-      throw new IllegalArgumentException("x is null or empty");
-    }
-
-    if (CollectionUtils.isEmpty(y)) {
-      throw new IllegalArgumentException("y is null or empty");
-    }
-
-    if (CollectionUtils.isEmpty(w)) {
-      throw new IllegalArgumentException("w is null or empty");
-    }
-
-    if (Objects.isNull(b)) {
-      throw new IllegalArgumentException("b is null");
-    }
+    Utils.validateList(x, "x");
+    Utils.validateList(y, "y");
+    Utils.validateList(w, "w");
+    Utils.validateNotNull(b, "b");
   }
+
 
   private BigDecimal dotProduct(final List<BigDecimal> xN, final List<BigDecimal> w) {
     return BigDecimal.valueOf(calculateDotProduct(xN, w));
