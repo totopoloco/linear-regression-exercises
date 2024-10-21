@@ -8,6 +8,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class SigmoidService {
 
+  /**
+   * Calculate the sigmoid function for a given value z.
+   * sigmoid(z) = 1 / (1 + e^(-z))
+   * Usage:
+   * <pre>
+   * sigmoid(0) = 0.5
+   * sigmoid(null) = IllegalArgumentException
+   * </pre>
+   *
+   * @param z value for the sigmoid function
+   * @return the result of the sigmoid function
+   */
   public BigDecimal sigmoid(BigDecimal z) {
     //Validate input, if z is null, throw an IllegalArgumentException
     if (Objects.isNull(z)) {

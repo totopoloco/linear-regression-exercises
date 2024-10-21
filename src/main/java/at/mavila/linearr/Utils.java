@@ -7,10 +7,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Utils {
 
+  /**
+   * Precision for the calculations.
+   */
   public static final int PRECISION = 20;
 
   /**
-   * Conenient method to get an array of BigDecimals.
+   * Convenient method to get an array of BigDecimals.
    *
    * @param value0 the first value.
    * @param value1 the second value.
