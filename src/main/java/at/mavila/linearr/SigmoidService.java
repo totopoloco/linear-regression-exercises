@@ -25,18 +25,13 @@ public class SigmoidService {
     if (Objects.isNull(z)) {
       throw new IllegalArgumentException("z is null");
     }
+    return applyFormula(z).stripTrailingZeros();
+  }
 
-    //First calculate lower part of the formula
-    //1 + e^(-z)
-    final BigDecimal zNegated = z.negate();
-    //Calculate e^(-z)
-    final BigDecimal eToTheMinusZ = BigDecimal.valueOf(Math.exp(zNegated.doubleValue()));
-    //Calculate 1 + e^(-z)
-    final BigDecimal lower = BigDecimal.ONE.add(eToTheMinusZ);
-
-    //Divide 1 by the lower part of the formula
-    final BigDecimal divided = BigDecimal.ONE.divide(lower, new MathContext(Utils.PRECISION));
-    return divided.stripTrailingZeros();
+  private static BigDecimal applyFormula(BigDecimal z) {
+    return BigDecimal.ONE.divide(//Divide 1 by the lower part of the formula
+        BigDecimal.ONE.add(BigDecimal.valueOf(Math.exp(z.negate().doubleValue()))), new MathContext(Utils.PRECISION)
+    );
   }
 
 }
