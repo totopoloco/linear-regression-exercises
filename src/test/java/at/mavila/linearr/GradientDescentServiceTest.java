@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
+import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,5 +43,13 @@ class GradientDescentServiceTest {
 
     ResultGradientDescent compute = this.gradientDescentService.compute(x, y, w, b, alpha, num_iters);
     assertThat(compute).isNotNull();
+
+    List<BigDecimal> wUpated = compute.w();
+    assertThat(wUpated).isNotNull();
+    assertThat(wUpated.getFirst()).isCloseTo(new BigDecimal("5.28"), Percentage.withPercentage(0.04));
+    assertThat(wUpated.getLast()).isCloseTo(new BigDecimal("5.08"), Percentage.withPercentage(0.04));
+    BigDecimal b1 = compute.b();
+    assertThat(b1).isNotNull();
+    assertThat(b1).isCloseTo(new BigDecimal("-14.222409982019837"), Percentage.withPercentage(0.04));
   }
 }

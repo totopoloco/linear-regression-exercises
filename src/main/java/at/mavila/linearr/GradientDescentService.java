@@ -3,6 +3,7 @@ package at.mavila.linearr;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,22 +36,20 @@ public class GradientDescentService {
                                        final BigDecimal alpha,
                                        final long numberOfIterations) {
 
-    List<BigDecimal> jHistory = new ArrayList<>();
+    final List<BigDecimal> jHistory = new ArrayList<>();
     //Clone wIn in w
-    List<BigDecimal> w = new ArrayList<>(wIn);
-    BigDecimal b = BigDecimal.valueOf(bIn.doubleValue());
+    final List<BigDecimal> w = new ArrayList<>(wIn);
+    final AtomicReference<BigDecimal> b = new AtomicReference<>(BigDecimal.valueOf(bIn.doubleValue()));
 
     for (long i = 0; i < numberOfIterations; i++) {
       //Calculate the gradient and update the parameters
-      ResultComputeGradient compute = computeGradientLogisticService.compute(x, y, w, b);
+      ResultComputeGradient resultComputeGradient = computeGradientLogisticService.compute(x, y, w, b.get());
       //w is an array of n elements and djDw is an array of n elements
       //port this from Python to Java
       //w = w - alpha * djDw
       //b = b - alpha * djDb
-      for (int j = 0; j < w.size(); j++) {
-        w.set(j, w.get(j).subtract(alpha.multiply(compute.djDw().get(j))));
-      }
-      b = b.subtract(alpha.multiply(compute.djDb()));
+      calculateW(alpha, w, resultComputeGradient);
+      b.set(calculateB(alpha, b.get(), resultComputeGradient));
 
       //Port this from Python to Java, I am not sure if this is needed in Java, but let's keep it for consistency
       /*
@@ -58,19 +57,38 @@ public class GradientDescentService {
         if i<100000:      # prevent resource exhaustion
             J_history.append( compute_cost_logistic(X, y, w, b) )
       * */
-      if (i < 100000) {
-        jHistory.add(this.computeCostLogisticService.compute(x, y, w, b));
-      }
+      storeInHistory(x, y, i, jHistory, w, b);
 
       // # Print cost every at intervals 10 times or as many iterations if < 10
-      if (i % Math.ceil((double) numberOfIterations / 10L) == 0) {
-        log.info(String.format("Iteration %4d: Cost %s", i, jHistory.getLast()));
-      }
+      logProgress((double) numberOfIterations, i, jHistory);
 
     }
 
 
-    return ResultGradientDescent.builder().w(w).costHistory(jHistory).b(b).build();
+    return ResultGradientDescent.builder().w(w).costHistory(jHistory).b(b.get()).build();
+  }
+
+  private static void logProgress(double numberOfIterations, long i, List<BigDecimal> jHistory) {
+    if (i % Math.ceil(numberOfIterations / 10L) == 0) {
+      log.info(String.format("Iteration %4d: Cost %s", i, jHistory.getLast()));
+    }
+  }
+
+  private void storeInHistory(List<List<BigDecimal>> x, List<BigDecimal> y, long i, List<BigDecimal> jHistory, List<BigDecimal> w,
+                              AtomicReference<BigDecimal> b) {
+    if (i < 100000) {
+      jHistory.add(this.computeCostLogisticService.compute(x, y, w, b.get()));
+    }
+  }
+
+  private static void calculateW(BigDecimal alpha, List<BigDecimal> w, ResultComputeGradient compute) {
+    for (int j = 0; j < w.size(); j++) {
+      w.set(j, w.get(j).subtract(alpha.multiply(compute.djDw().get(j))));
+    }
+  }
+
+  private static BigDecimal calculateB(BigDecimal alpha, BigDecimal b, ResultComputeGradient compute) {
+    return b.subtract(alpha.multiply(compute.djDb()));
   }
 
 }
