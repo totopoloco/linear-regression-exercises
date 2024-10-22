@@ -1,5 +1,7 @@
 package at.mavila.linearr;
 
+import static java.lang.String.format;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +63,10 @@ public class GradientDescentService {
 
   private static void logProgress(final double numberOfIterations, final long i, final List<BigDecimal> jHistory) {
     if (i % Math.ceil(numberOfIterations / 10L) == 0) {
-      log.info(String.format("Iteration %4d: Cost %s", i, jHistory.getLast()));
+      if (log.isInfoEnabled()) {
+        final String message = format("Iteration %4d: Cost %s", i, jHistory.getLast());
+        log.info(message);
+      }
     }
   }
 
