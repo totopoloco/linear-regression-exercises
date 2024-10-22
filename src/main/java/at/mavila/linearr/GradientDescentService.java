@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.LongStream;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,34 +42,24 @@ public class GradientDescentService {
     final List<BigDecimal> w = new ArrayList<>(wIn);
     final AtomicReference<BigDecimal> b = new AtomicReference<>(BigDecimal.valueOf(bIn.doubleValue()));
 
-    for (long i = 0; i < numberOfIterations; i++) {
-      //Calculate the gradient and update the parameters
-      ResultComputeGradient resultComputeGradient = computeGradientLogisticService.compute(x, y, w, b.get());
-      //w is an array of n elements and djDw is an array of n elements
-      //port this from Python to Java
-      //w = w - alpha * djDw
-      //b = b - alpha * djDb
+    //Calculate the gradient and update the parameters
+    //w is an array of n elements and djDw is an array of n elements
+    //port this from Python to Java
+    //w = w - alpha * djDw
+    //b = b - alpha * djDb
+    LongStream.range(0L, numberOfIterations).forEach(index -> {
+      final ResultComputeGradient resultComputeGradient = this.computeGradientLogisticService.compute(x, y, w, b.get());
       calculateW(alpha, w, resultComputeGradient);
       b.set(calculateB(alpha, b.get(), resultComputeGradient));
-
-      //Port this from Python to Java, I am not sure if this is needed in Java, but let's keep it for consistency
-      /*
-       # Save cost J at each iteration
-        if i<100000:      # prevent resource exhaustion
-            J_history.append( compute_cost_logistic(X, y, w, b) )
-      * */
-      storeInHistory(x, y, i, jHistory, w, b);
-
-      // # Print cost every at intervals 10 times or as many iterations if < 10
-      logProgress((double) numberOfIterations, i, jHistory);
-
-    }
+      storeInHistory(x, y, index, jHistory, w, b);
+      logProgress((double) numberOfIterations, index, jHistory);
+    });
 
 
     return ResultGradientDescent.builder().w(w).costHistory(jHistory).b(b.get()).build();
   }
 
-  private static void logProgress(double numberOfIterations, long i, List<BigDecimal> jHistory) {
+  private static void logProgress(final double numberOfIterations, final long i, final List<BigDecimal> jHistory) {
     if (i % Math.ceil(numberOfIterations / 10L) == 0) {
       log.info(String.format("Iteration %4d: Cost %s", i, jHistory.getLast()));
     }
