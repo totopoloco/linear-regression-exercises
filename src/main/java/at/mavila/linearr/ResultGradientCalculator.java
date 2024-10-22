@@ -6,5 +6,5 @@ import lombok.With;
 
 @With
 @Builder
-public record Result(BigDecimal wValid, BigDecimal bValid) {
+public record ResultGradientCalculator(BigDecimal wValid, BigDecimal bValid) {
 }

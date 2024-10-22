@@ -51,7 +51,7 @@ public final class InputValidator {
    * @param b bias
    * @return the valid parameters
    */
-  public static Result wrapParameters(List<BigDecimal> x, List<BigDecimal> y, BigDecimal w, BigDecimal b) {
+  public static ResultGradientCalculator wrapParameters(List<BigDecimal> x, List<BigDecimal> y, BigDecimal w, BigDecimal b) {
     validateArraysXY(x, y);
     return createResult(w, b);
   }
@@ -63,8 +63,8 @@ public final class InputValidator {
    * @param b bias.
    * @return the valid values.
    */
-  private static Result createResult(BigDecimal w, BigDecimal b) {
-    return Result.builder()
+  private static ResultGradientCalculator createResult(BigDecimal w, BigDecimal b) {
+    return ResultGradientCalculator.builder()
         .wValid(Objects.requireNonNull(w, "w is null"))
         .bValid(Objects.requireNonNull(b, "b is null"))
         .build();

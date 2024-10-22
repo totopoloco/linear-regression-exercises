@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor(onConstructor_ = @Autowired)
-public class ComputeGradientLogistic {
+public class ComputeGradientLogisticService {
 
   private final SigmoidService sigmoidService;
 

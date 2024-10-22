@@ -15,14 +15,14 @@ public final class GradientCalculator {
    * @param x                list of x values
    * @param y                list of y values
    * @param m                number of samples
-   * @param result           wrapped parameters
+   * @param resultGradientCalculator           wrapped parameters
    * @param initialCondition initial condition, wrapped in an array of BigDecimals with 0 and 0.
    * @return the gradients for w and b
    */
   public static BigDecimal[] calculateGradients(final List<BigDecimal> x,
                                                 final List<BigDecimal> y,
                                                 final int m,
-                                                final Result result,
+                                                final ResultGradientCalculator resultGradientCalculator,
                                                 final BigDecimal[] initialCondition) {
     return IntStream.range(0, m)
         .mapToObj(i -> {
@@ -30,7 +30,7 @@ public final class GradientCalculator {
               getDifferenceObservedVsPredicted(
                   y,
                   i,
-                  ModelCreator.createModel(x.get(i), result.wValid(), result.bValid()));
+                  ModelCreator.createModel(x.get(i), resultGradientCalculator.wValid(), resultGradientCalculator.bValid()));
           return Utils.getBigDecimals(diff.multiply(x.get(i)), diff);
         })
         .reduce(

@@ -22,6 +22,7 @@ class ComputeCostServiceTest {
   @Autowired
   private ComputeCostService computeCostService;
 
+
   @Test
   void whenGivenW2B1ParametersThenGetAResult() {
     //Given

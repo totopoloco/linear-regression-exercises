@@ -28,10 +28,11 @@ public class ComputeCostService {
    */
   public BigDecimal computeCost(List<BigDecimal> x, List<BigDecimal> y, BigDecimal w, BigDecimal b) {
 
-    Result result = InputValidator.wrapParameters(x, y, w, b);
+    ResultGradientCalculator resultGradientCalculator = InputValidator.wrapParameters(x, y, w, b);
 
     //Compute the cost
-    BigDecimal divided = calculateTotalCost(x, y, result.wValid(), result.bValid()) /*BigDecimal*/
+    BigDecimal divided =
+        calculateTotalCost(x, y, resultGradientCalculator.wValid(), resultGradientCalculator.bValid()) /*BigDecimal*/
         .divide(BigDecimal.valueOf(2L * x.size()), new MathContext(Utils.PRECISION));
 
     return divided.stripTrailingZeros();

@@ -12,10 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Slf4j
-class ComputeGradientLogisticTest {
+class ComputeGradientLogisticServiceTest {
 
   @Autowired
-  private ComputeGradientLogistic computeGradientLogistic;
+  private ComputeGradientLogisticService computeGradientLogisticService;
 
   @Test
   void whenUsingParameterFromTrainingThenResult() {
@@ -46,15 +46,16 @@ class ComputeGradientLogisticTest {
 
     BigDecimal b = BigDecimal.valueOf(1D);
 
-    ResultComputeGradient compute = this.computeGradientLogistic.compute(x, y, w, b);
+    ResultComputeGradient resultComputeGradient = this.computeGradientLogisticService.compute(x, y, w, b);
 
-    assertThat(compute).isNotNull();
-    assertThat(compute.djDw().get(0)).isNotNull()
+    assertThat(resultComputeGradient).isNotNull();
+    assertThat(resultComputeGradient.djDw().get(0)).isNotNull()
         .isCloseTo(new BigDecimal("0.498333393278696"), Percentage.withPercentage(0.0001));
-    assertThat(compute.djDw().get(1)).isNotNull()
+    assertThat(resultComputeGradient.djDw().get(1)).isNotNull()
         .isCloseTo(new BigDecimal("0.49883942983996693"), Percentage.withPercentage(0.0001));
 
-    assertThat(compute.djDb()).isNotNull().isCloseTo(new BigDecimal("0.49861806546328574"), Percentage.withPercentage(0.0001));
+    assertThat(resultComputeGradient.djDb()).isNotNull()
+        .isCloseTo(new BigDecimal("0.49861806546328574"), Percentage.withPercentage(0.0001));
 
 
   }

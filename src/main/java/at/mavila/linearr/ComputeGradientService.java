@@ -30,11 +30,12 @@ public class ComputeGradientService {
    */
   public List<BigDecimal> computeGradient(List<BigDecimal> x, List<BigDecimal> y, BigDecimal w, BigDecimal b) {
     // Use the input validator to validate the input
-    final Result result = InputValidator.wrapParameters(x, y, w, b);
+    final ResultGradientCalculator resultGradientCalculator = InputValidator.wrapParameters(x, y, w, b);
     final int m = x.size();
 
     BigDecimal[] gradients =
-        GradientCalculator.calculateGradients(x, y, m, result, Utils.getBigDecimals(BigDecimal.ZERO, BigDecimal.ZERO));
+        GradientCalculator.calculateGradients(x, y, m, resultGradientCalculator,
+            Utils.getBigDecimals(BigDecimal.ZERO, BigDecimal.ZERO));
 
     // Divide the accumulated partial derivatives by the number of samples
     final BigDecimal djdwDivideMZeros = gradients[0].divide(BigDecimal.valueOf(m), new MathContext(Utils.PRECISION));
