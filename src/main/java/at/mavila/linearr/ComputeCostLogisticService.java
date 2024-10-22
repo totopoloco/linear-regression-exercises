@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.AllArgsConstructor;
 import org.apache.commons.math3.analysis.function.Log;
-import org.apache.commons.math3.linear.ArrayRealVector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,19 +67,7 @@ public class ComputeCostLogisticService {
 
 
   private BigDecimal dotProduct(final List<BigDecimal> xN, final List<BigDecimal> w) {
-    return BigDecimal.valueOf(calculateDotProduct(xN, w));
+    return BigDecimal.valueOf(Utils.calculateDotProduct(xN, w));
   }
 
-  private static double calculateDotProduct(List<BigDecimal> xN, List<BigDecimal> w) {
-    return (new ArrayRealVector(
-        xN.stream()
-            .mapToDouble(BigDecimal::doubleValue)
-            .toArray())
-    ).dotProduct(
-        new ArrayRealVector(
-            w.stream()
-                .mapToDouble(BigDecimal::doubleValue)
-                .toArray())
-    );
-  }
 }

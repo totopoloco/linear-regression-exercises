@@ -6,6 +6,7 @@ import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.math3.linear.ArrayRealVector;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Utils {
@@ -50,5 +51,18 @@ public final class Utils {
     if (Objects.isNull(obj)) {
       throw new IllegalArgumentException(name + " is null");
     }
+  }
+
+  public static double calculateDotProduct(List<BigDecimal> xN, List<BigDecimal> w) {
+    return (new ArrayRealVector(
+        xN.stream()
+            .mapToDouble(BigDecimal::doubleValue)
+            .toArray())
+    ).dotProduct(
+        new ArrayRealVector(
+            w.stream()
+                .mapToDouble(BigDecimal::doubleValue)
+                .toArray())
+    );
   }
 }
