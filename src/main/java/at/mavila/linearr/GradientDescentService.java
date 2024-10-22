@@ -62,12 +62,12 @@ public class GradientDescentService {
   }
 
   private static void logProgress(final double numberOfIterations, final long i, final List<BigDecimal> jHistory) {
-    if (i % Math.ceil(numberOfIterations / 10L) == 0) {
-      if (log.isInfoEnabled()) {
-        final String message = format("Iteration %4d: Cost %s", i, jHistory.getLast());
-        log.info(message);
-      }
+
+    if (i % Math.ceil(numberOfIterations / 10L) != 0 || !log.isInfoEnabled()) {
+      return;
     }
+
+    log.info(format("Iteration %4d: Cost %s", i, jHistory.getLast()));
   }
 
   private void storeInHistory(List<List<BigDecimal>> x, List<BigDecimal> y, long i, List<BigDecimal> jHistory, List<BigDecimal> w,
